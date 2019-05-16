@@ -1,51 +1,43 @@
 import React, { Component } from 'react'
 import { TextInput,StatusBar,Text,TouchableOpacity ,View,StyleSheet } from 'react-native'
-
+import  TextInputApollo  from './TextInputApollo'
+import Button from './button'
 export default class LoginForm extends Component {
   render() {
     return (
       <View style={StyleSheet.container}>
-       {/* <StatusBar
-       barStyle="light-content"/> */}
-        <TextInput
+       <StatusBar
+       barStyle="light-content"/>
+        <TextInputApollo
         placeholder='username or email'
         placeholderTextColor="rgba(255,255,255,0.7)"
         returnKeyType="next"
-        style={styles.input}
         keyboardType='email-address'
         autoCapitalize="none"
         autoCorrect={false}
         onSubmitEditing={()=> this.passwordInput.focus()}
         />
-        <TextInput
+        <TextInputApollo
         placeholder='password'
-        style={styles.input}
         returnKeyType="go"
         placeholderTextColor="rgba(255,255,255,0.7)"
         secureTextEntry={true}
         ref={(input)=> this.passwordInput=input}
         />
 
-        <TouchableOpacity style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Log in</Text>
+        <TouchableOpacity>
+            {/* <Text style={styles.buttonText}>Log in</Text> */}
+            <Button><Text >Log in</Text></Button>
         </TouchableOpacity>
+        <Text style={styles.buttonText}>Forgot password?</Text>
       </View>
     )
   }
 }
 const styles=StyleSheet.create({
     container:{
-        padding:20
-    },
-    input:{
-        height:40,
-        backgroundColor:'rgba(255,255,255,0.7)',
-        marginBottom:20,
-        color:'#fff',
-        paddingHorizontal:10,
-        marginLeft:20,
-        marginRight:20,
-        borderRadius:12
+        padding:20,
+        marginBottom:50
     },
     buttonContainer:{
         backgroundColor:'#ffffff',
