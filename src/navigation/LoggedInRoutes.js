@@ -5,7 +5,8 @@ import People from '../view/People'
 const LoggedInRoutes= createBottomTabNavigator({
   People:
   {
-      screen:People
+      screen:People,
+      
   },
   Profile:
   {

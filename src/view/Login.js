@@ -2,27 +2,24 @@ import React, { Component } from 'react'
 import { Text, View ,Header,KeyboardAvoidingView,StyleSheet,Image} from 'react-native'
 import LoginForm from '../components/LoginForm'
 export default class Login extends Component {
+  
   render() {
     return (
-      <KeyboardAvoidingView 
-      style = {{ flex: 1 }}
-      behavior = "padding" > 
-      
-
-      <View style ={styles.container}>
-      <View style={styles.logoContainer}>
-<Image styles={styles.logo}
-source={require('../../assets/tklogo.png')}>
-</Image>
-<Text></Text>
-
-      </View>
-      <View style={styles.formContainer}>
-        <LoginForm></LoginForm>
-      </View>
-      </View>
-       </KeyboardAvoidingView>
-    )
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image
+              styles={styles.logo}
+              source={require("../../assets/tklogo.png")}
+            />
+            <Text />
+          </View>
+          <View style={styles.formContainer}>
+            <LoginForm login={this.props.screenProps.login}/>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    );
   }
 }
 

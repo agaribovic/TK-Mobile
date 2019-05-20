@@ -14,6 +14,7 @@ export default class TextInputApollo extends Component {
         autoCorrect={this.props.autoCorrect}
         onSubmitEditing={this.props.onSubmitEditing}
         secureTextEntry={this.props.secureTextEntry}
+        onChangeText={this.props.onChangeText}
         ></TextInput></View>
     )
   }
