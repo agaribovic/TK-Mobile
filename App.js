@@ -22,19 +22,12 @@ export default class App extends React.Component {
   }
   render() {
     const RootNavigator= createAppContainer(getRootNavigator(this.state.loggedIn))
+    // if(AsyncStorage.getItem('TOKEN')===undefined)
     return (
-      <RootNavigator screenProps={{
-        login: () => this.setState({loggedIn: true}),
-        logout: () => this.setState({loggedIn: false})}}
-        />
-    );
+        <RootNavigator screenProps={{
+          login: () => this.setState({loggedIn: true}),
+          logout: () => this.setState({loggedIn: false})}}
+          />
+    )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
