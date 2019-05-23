@@ -31,6 +31,7 @@ export default class LoginForm extends Component {
        <StatusBar
        barStyle="light-content"/>
         <TextInputApollo
+        style={styles.txtinput}
         placeholder='username or email'
         placeholderTextColor="rgba(255,255,255,0.9)"
         returnKeyType="next"
@@ -41,6 +42,7 @@ export default class LoginForm extends Component {
         onSubmitEditing={()=> this.passwordInput.focus()}
         />
         <TextInputApollo
+        style={styles.txtinput}
         placeholder='password'
         returnKeyType="go"
         placeholderTextColor="rgba(255,255,255,0.9)"
@@ -80,5 +82,15 @@ const styles=StyleSheet.create({
       textAlign:'center',
       color:'rgba(255,255,255,0.9)',
       marginBottom:30,
-    }
+    },
+      txtinput:{
+        height:40,
+        backgroundColor:'rgba(255,255,255,0.7)',
+        marginBottom:20,
+        color:'#fff',
+        paddingHorizontal:10,
+        marginLeft:20,
+        marginRight:20,
+        borderRadius:12
+      }
 })

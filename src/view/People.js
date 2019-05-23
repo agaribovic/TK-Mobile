@@ -1,20 +1,23 @@
 import React, { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
-import { RNModal } from "rn-start-elements";
+import  RNModal  from '../components/RNModal';//
 import { getUsers } from "../service";
 import { Avatar } from 'react-native-elements';
 import { ListItem } from 'react-native-elements';
-
+import Button from '../components/button'
 import moment from "moment";
-import config from '../../config'
+import config from '../../config';
+import TextInputApollo from '../components/TextInputApollo'
+
 const RenderItem = () => <View style={styles.separator} />;
 
 export default class People extends Component {
   state = {
     users: [],
     modalVisible: false,
-    user: {}
+    user: {},
+    edit: false
   };
 
   componentDidMount() {
@@ -25,7 +28,7 @@ export default class People extends Component {
     });
   }
   _onPress = user => {
-    // console.log(user);
+    console.log(user);
     this.setState({ modalVisible: true, user: user });
   };
   _onPicturePress = user => {
@@ -34,7 +37,16 @@ export default class People extends Component {
   closeModal = () => {
     this.setState({ modalVisible: false, user: {} });
   };
-  _keyExtractor = (item, index) => item._id;
+
+  onEditClick= () => {
+    if(!this.state.edit){
+    this.setState({edit : true});
+    }else{
+      this.setState({edit : false});
+    }
+  };
+   _keyExtractor = (item, index) => item._id;
+
   render() {
     const { itemWrapper, firstName } = styles;
     const birthday = moment(this.state.user.birthday).format("MMMM Do YYYY");
@@ -79,7 +91,35 @@ export default class People extends Component {
             />
             </TouchableOpacity>
           </View>
-          <View><Text>Text fields here</Text></View>
+          {!this.state.edit &&
+          <Button onPress={this.onEditClick}>Swap to edit</Button>
+          }
+          {!this.state.edit &&
+          <View>
+            <Text>Name: {this.state.user.firstName} {this.state.user.lastName}</Text>
+            <Text>Position: {this.state.user.position}</Text>
+            <Text>Email: {this.state.user.email}</Text>
+          </View>
+          }
+          {this.state.edit &&
+          <Button onPress={this.onEditClick}>Swap to info</Button>
+          }
+          {this.state.edit &&
+          <View>
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.firstName +' '+ this.state.user.lastName}
+            />
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.position}
+            />
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.email}
+            />
+          </View>
+          }
         </RNModal>
       </SafeAreaView>
     );
@@ -102,11 +142,27 @@ const styles = {
     // flex: 1,
     // marginLeft:65,
     alignSelf:'center',
-    width: 180,
-    height: 180,
-    
+    // width: 150,
+    // height: 150,
+    // borderRadius: 40,
     // justifyContent: 'center',
     // alignItems: 'center',
     // resizeMode: 'contain'
+    width: 150,
+    height: 150,
+    borderRadius: 150 ,
+    overflow: "hidden",
+    //borderWidth: 3,
+   },
+   input: {
+    width:200,
+    height:30,
+    backgroundColor:'rgba(255,255,255,0.7)',
+    marginBottom:10,
+    color:'#fff',
+    paddingHorizontal:10,
+    borderRadius:12,
+    borderColor:"black",
+    borderWidth: 0.5
    }
 };
