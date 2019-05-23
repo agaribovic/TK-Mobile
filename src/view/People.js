@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity,Image } from "react-native";
 import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
-import { RNModal } from "rn-start-elements";
+import  RNModal  from '../components/RNModal';//
 import { getUsers } from "../service";
 // import { Avatar } from 'react-native-elements';
 import { ListItem } from 'react-native-elements';
@@ -10,6 +10,8 @@ import {Button } from '../components/button'
 import moment from "moment";
 import config from '../../config'
 import { Permissions, ImagePicker} from "expo"
+import TextInputApollo from '../components/TextInputApollo'
+
 
 
 const RenderItem = () => <View style={styles.separator} />;
@@ -21,7 +23,8 @@ export default class People extends Component {
     user: {},
     image: null,
     showOptions: false,
-    hasCameraPermission: null
+    hasCameraPermission: null,
+    edit: false
   };
 
   componentDidMount() {
@@ -64,7 +67,7 @@ export default class People extends Component {
     })
   }
   _onPress = user => {
-    // console.log(user);
+    console.log(user);
     this.setState({ modalVisible: true, user: user });
   };
   _onPicturePress = user => {
@@ -76,7 +79,16 @@ export default class People extends Component {
   _pickImageHandler = () => {
     this.setState({ showOptions: !this.state.showOptions})
   }
-  _keyExtractor = (item, index) => item._id;
+
+  onEditClick= () => {
+    if(!this.state.edit){
+    this.setState({edit : true});
+    }else{
+      this.setState({edit : false});
+    }
+  };
+   _keyExtractor = (item, index) => item._id;
+
   render() {
     const {navigate}=this.props.navigation
     const { itemWrapper, firstName, avatar, profileWrapper, cameraWrapper} = styles;
@@ -161,6 +173,35 @@ export default class People extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+          {!this.state.edit &&
+          <Button onPress={this.onEditClick}>Swap to edit</Button>
+          }
+          {!this.state.edit &&
+          <View>
+            <Text>Name: {this.state.user.firstName} {this.state.user.lastName}</Text>
+            <Text>Position: {this.state.user.position}</Text>
+            <Text>Email: {this.state.user.email}</Text>
+          </View>
+          }
+          {this.state.edit &&
+          <Button onPress={this.onEditClick}>Swap to info</Button>
+          }
+          {this.state.edit &&
+          <View>
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.firstName +' '+ this.state.user.lastName}
+            />
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.position}
+            />
+            <TextInputApollo
+            style={styles.input}
+            placeholder={this.state.user.email}
+            />
+          </View>
+          }
         </RNModal>
       </SafeAreaView>
     );
@@ -197,6 +238,17 @@ const styles = {
     alignItems: 'center',
     marginRight: 20
   },
+  input: {
+    width:200,
+    height:30,
+    backgroundColor:'rgba(255,255,255,0.7)',
+    marginBottom:10,
+    color:'#fff',
+    paddingHorizontal:10,
+    borderRadius:12,
+    borderColor:"black",
+    borderWidth: 0.5
+   },
    avatar: {
     width: 100, 
     height: 100,
@@ -206,4 +258,5 @@ const styles = {
     justifyContent: 'center', 
     alignItems: 'center'
   }
+
 };

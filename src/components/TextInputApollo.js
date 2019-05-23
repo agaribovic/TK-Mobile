@@ -5,7 +5,8 @@ export default class TextInputApollo extends Component {
   render() {    
     return (
         <View>
-        <TextInput style={styles.txtinput}
+        <TextInput 
+        style={this.props.style}
         placeholder={this.props.placeholder}
         placeholderTextColor={this.props.placeholderTextColor}
         returnKeyType={this.props.returnKeyType}
@@ -15,20 +16,10 @@ export default class TextInputApollo extends Component {
         onSubmitEditing={this.props.onSubmitEditing}
         secureTextEntry={this.props.secureTextEntry}
         onChangeText={this.props.onChangeText}
-        ></TextInput></View>
+        ></TextInput>
+        </View>
     )
   }
 }
-const styles=StyleSheet.create({
-    txtinput:{
-        height:40,
-        backgroundColor:'rgba(255,255,255,0.7)',
-        marginBottom:20,
-        color:'#fff',
-        paddingHorizontal:10,
-        marginLeft:20,
-        marginRight:20,
-        borderRadius:12
-    }
-})
+
 
