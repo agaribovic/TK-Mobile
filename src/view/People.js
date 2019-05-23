@@ -2,29 +2,33 @@
 import React, { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity,Image } from "react-native";
 import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
-import  RNModal  from '../components/RNModal';//
+import Modal  from 'react-native-modalbox'
 import { getUsers } from "../service";
-// import { Avatar } from 'react-native-elements';
 import { ListItem } from 'react-native-elements';
-import {Button } from '../components/button'
+import Button  from '../components/button'
 import moment from "moment";
 import config from '../../config'
 import { Permissions, ImagePicker} from "expo"
 import TextInputApollo from '../components/TextInputApollo'
-
-
+import {updateUsers} from '../service'
 
 const RenderItem = () => <View style={styles.separator} />;
 
 export default class People extends Component {
   state = {
     users: [],
-    modalVisible: false,
+    isOpen: false,
     user: {},
     image: null,
     showOptions: false,
     hasCameraPermission: null,
-    edit: false
+    edit: false,
+    newfirstname:'',
+    newlastname:'',
+    newposition:'',
+    newemail:'',
+    clickedID:''
+
   };
 
   componentDidMount() {
@@ -32,6 +36,11 @@ export default class People extends Component {
       this.setState({
         users: users.data,
         // image: config.imageUrl+users.image+'.jpg'
+        newfirstname:'',
+        newlastname:'',
+        newposition:'',
+        newemail:'',
+        clickedID:''
       });
     });
   }
@@ -67,19 +76,59 @@ export default class People extends Component {
     })
   }
   _onPress = user => {
-    console.log(user);
-    this.setState({ modalVisible: true, user: user });
+  console.log("TCL: People -> user", user)
+    // console.log(user);
+    this.setState({ isOpen: true, user: user,clickedID:user._id, newemail:user.email,newfirstname:user.firstName,newlastname:user.lastName,newposition:user.position});
   };
   _onPicturePress = user => {
     console.log(user.firstName + 'editing profile');
   };
   closeModal = () => {
-    this.setState({ modalVisible: false, user: {} });
+    this.setState({ isOpen: false, user: {} });
   };
   _pickImageHandler = () => {
     this.setState({ showOptions: !this.state.showOptions})
   }
+  handleSubmit=()=>{
+    const person = {
+      // _id:this.state.clickedID || undefined,
+      firstName: this.state.newfirstname || undefined,
+      lastName: this.state.newlastname || undefined,
+      position:this.state.newposition || undefined,
+      email:this.state.newemail || undefined
+    };
+    
+      updateUsers(this.state.clickedID, person).then(data => {
+        console.log("TCL: People -> handleSubmit -> person", person)
+        console.log("TCL: People -> handleSubmit -> this.state.clickedID", this.state.clickedID)
+        console.log("TCL: People -> handleSubmit -> data", data)
 
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          // closeModal();
+          onClose()
+        }
+      });
+  };
+     
+  
+  formatDate = (badDate) =>{
+    var monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+    let date = new Date(badDate)
+
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+  
+
+    return day + ' ' + monthNames[monthIndex] + ' ' + year;
+  }
   onEditClick= () => {
     if(!this.state.edit){
     this.setState({edit : true});
@@ -115,28 +164,24 @@ export default class People extends Component {
             </TouchableOpacity>
           )}
         />
-        <RNModal
-          visible={this.state.modalVisible}
-          onClose={this.closeModal}
+        <Modal
+          visible={this.state.isOpen}
+          C={this.closeModal}
+          swipeToClose={false}
+          swipeDirection={"down"}
+          swipeArea={20} // The height in pixels of the swipeable area, window height by default
+          swipeThreshold={50} // The threshold to reach in pixels to close the modal
+          isOpen={this.state.isOpen}
+          backdropOpacity={0.1}
           closeIconRounded
         >
+          <View style={styles.modalView}>
           <View style={profileWrapper}>
            
-            {/* <TouchableOpacity
-              onPress={() => this._onPicturePress(this.state.user)}
-            > */}
-            {/* <Avatar
-                rounded
-                style={styles.image}
-                source={{
-                  uri: config.imageUrl + this.state.user.firstName + ".jpg"
-                }}
-                showEditButton
-              /> */}
-            {/* </TouchableOpacity> */}
             {image ? (
               <TouchableOpacity onPress={this._pickImageHandler}>
-                <Image source={{ uri: image }} style={avatar} />
+                
+                <Image source={{ uri: config.imageUrl + item.firstName + ".jpg" }} style={avatar} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={this._pickImageHandler}>
@@ -152,7 +197,11 @@ export default class People extends Component {
             {this.state.showOptions && (
               <View style={cameraWrapper}>
                 <TouchableOpacity onPress={() => this._pickImage(false)}>
-                  <Text>Camera Roll</Text>
+                 
+                  <Button
+  color="#841584"
+  accessibilityLabel="Learn more about this purple button"
+> <Text>Camera Roll</Text></Button>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this._pickImage(true)}>
                   <Text>Image Library</Text>
@@ -161,9 +210,8 @@ export default class People extends Component {
             )}
           </View>
           <View>
-            <Text>Text fields here</Text>
             {/* <Button onPress={() => navigate('Profile', {name: this.state.user})}></Button> */}
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Text
                 onPress={() => {
                   navigate("Calendar", { name: this.state.user });
@@ -171,38 +219,63 @@ export default class People extends Component {
               >
                 Open calendar
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           {!this.state.edit &&
-          <Button onPress={this.onEditClick}>Swap to edit</Button>
+          <Button onPress={this.onEditClick}>Edit this profile</Button>
           }
           {!this.state.edit &&
           <View>
             <Text>Name: {this.state.user.firstName} {this.state.user.lastName}</Text>
             <Text>Position: {this.state.user.position}</Text>
             <Text>Email: {this.state.user.email}</Text>
+            <Text>Gender: {this.state.user.gender}</Text>
+            <Text>Hired: {this.formatDate(this.state.user.beginDate)}</Text>
           </View>
           }
-          {this.state.edit &&
-          <Button onPress={this.onEditClick}>Swap to info</Button>
-          }
+         
           {this.state.edit &&
           <View>
+             <Text>First name:</Text>
             <TextInputApollo
             style={styles.input}
-            placeholder={this.state.user.firstName +' '+ this.state.user.lastName}
+            value={this.state.newfirstname}
+            onChangeText={(value) => this.setState({newfirstname: value})}
             />
+              <Text>Last name:</Text>
+             <TextInputApollo
+            style={styles.input}
+            value={this.state.newlastname}
+            onChangeText={(value) => this.setState({newlastname: value})}
+
+            
+            />
+             <Text>Position:</Text>
             <TextInputApollo
             style={styles.input}
-            placeholder={this.state.user.position}
+            value={this.state.newposition}
+            onChangeText={(value) => this.setState({newposition: value})}
+
             />
+            <Text>Email:</Text>
             <TextInputApollo
             style={styles.input}
-            placeholder={this.state.user.email}
+            value={this.state.newemail}
+            onChangeText={(value) => this.setState({newemail: value})}
+
             />
+            <Button onClick={this.closeModal}><Text>Close</Text></Button>
+
           </View>
           }
-        </RNModal>
+           {this.state.edit &&
+          <View>
+             <Button onPress={this.onEditClick}>Dismiss</Button>
+             <Button onPress={this.handleSubmit}>Submit</Button>
+          </View>
+          }
+          </View>
+        </Modal>
       </SafeAreaView>
     );
   }
@@ -211,6 +284,9 @@ export default class People extends Component {
 const styles = {
   listContainer:{
     backgroundColor:'#0a59a9'
+  },
+  modalView:{
+    // backgroundColor:'#0a59a9'
   },
   listItem:{
     backgroundColor:'#0a59a9'
@@ -243,7 +319,7 @@ const styles = {
     height:30,
     backgroundColor:'rgba(255,255,255,0.7)',
     marginBottom:10,
-    color:'#fff',
+    color:'black',
     paddingHorizontal:10,
     borderRadius:12,
     borderColor:"black",
@@ -256,7 +332,8 @@ const styles = {
   },
   profileWrapper: {
     justifyContent: 'center', 
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop:100,
   }
 
 };

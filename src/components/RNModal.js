@@ -30,7 +30,10 @@ class RNModal extends Component {
      } = this.props;
     const { containerStyle, innerContainerStyle } = styles;
     return (
-      <Modal animationType="none" onRequestClose={() => { }} transparent visible={visible}>
+      <Modal animationType="none" onRequestClose={() => { }} transparent visible={visible}
+      swipeDirection={this.props.swipeDirection}
+      onSwipe={this.props.onSwipe}
+      >
         <View style={containerStyle}>
           <View style={[ innerContainerStyle, style ]}>
           <View style={styles.header}>
