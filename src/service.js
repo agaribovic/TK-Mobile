@@ -54,6 +54,7 @@ export const getUsers = async () => {
   };
   let users = axios.get(
     "http://ec2-34-221-254-153.us-west-2.compute.amazonaws.com:3000/api/people",
+    // "http://localhost:3000/api/people",
     axiosConfig
   );
   return users;
