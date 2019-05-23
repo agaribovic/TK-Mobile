@@ -23,15 +23,15 @@ const LoggedInRoutes = createBottomTabNavigator({
       )
     }
   },
-  Calendar: {
-    screen: Calendar,
-    navigationOptions: {
-      tabBarLabel: null,
-      tabBarIcon: ({ tintColor }) => (
-        <Ionicons name="md-calendar" size={32} color="#222" />
-      )
-    }
-  }
+  // Calendar: {
+  //   screen: Calendar,
+  //   navigationOptions: {
+  //     tabBarLabel: null,
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Ionicons name="md-calendar" size={32} color="#222" />
+  //     )
+  //   }
+  // }
 });
 
 export default LoggedInRoutes;

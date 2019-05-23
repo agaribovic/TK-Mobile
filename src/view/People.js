@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity,Image } from "react-native";
 import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
+import RNModal from '../components/RNModal'
 import Modal  from 'react-native-modalbox'
 import { getUsers } from "../service";
 import { ListItem } from 'react-native-elements';
@@ -77,7 +78,7 @@ export default class People extends Component {
   }
   _onPress = user => {
   console.log("TCL: People -> user", user)
-    // console.log(user);
+  this.setState({ isOpen: false, user: '',clickedID:'', newemail:'',newfirstname:'',newlastname:'',newposition:''});
     this.setState({ isOpen: true, user: user,clickedID:user._id, newemail:user.email,newfirstname:user.firstName,newlastname:user.lastName,newposition:user.position});
   };
   _onPicturePress = user => {
@@ -101,14 +102,10 @@ export default class People extends Component {
       updateUsers(this.state.clickedID, person).then(data => {
         console.log("TCL: People -> handleSubmit -> person", person)
         console.log("TCL: People -> handleSubmit -> this.state.clickedID", this.state.clickedID)
-        console.log("TCL: People -> handleSubmit -> data", data)
-
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          // closeModal();
-          onClose()
-        }
+        console.log("TCL: People -> handleSubmit -> data", data.data)
+           this.closeModal();
+          // onClose()
+        
       });
   };
      
@@ -139,6 +136,7 @@ export default class People extends Component {
    _keyExtractor = (item, index) => item._id;
 
   render() {
+    console.log(this.state)
     const {navigate}=this.props.navigation
     const { itemWrapper, firstName, avatar, profileWrapper, cameraWrapper} = styles;
     const { image } = this.state;
@@ -164,44 +162,46 @@ export default class People extends Component {
             </TouchableOpacity>
           )}
         />
-        <Modal
+        <RNModal
           visible={this.state.isOpen}
-          C={this.closeModal}
+          onClose={this.closeModal}
           swipeToClose={false}
           swipeDirection={"down"}
           swipeArea={20} // The height in pixels of the swipeable area, window height by default
           swipeThreshold={50} // The threshold to reach in pixels to close the modal
-          isOpen={this.state.isOpen}
           backdropOpacity={0.1}
           closeIconRounded
         >
-          <View style={styles.modalView}>
           <View style={profileWrapper}>
-           
             {image ? (
               <TouchableOpacity onPress={this._pickImageHandler}>
-                
-                <Image source={{ uri: config.imageUrl + item.firstName + ".jpg" }} style={avatar} />
+                <Image
+                  source={{
+                    uri: config.imageUrl + item.firstName + ".jpg"
+                  }}
+                  style={avatar}
+                />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={this._pickImageHandler}>
                 <Image
-                  source={require('../../assets/profile.jpg')}
+                  source={require("../../assets/profile.jpg")}
                   style={avatar}
                 />
               </TouchableOpacity>
             )}
-             <Text>
+            <Text>
               {this.state.user.firstName + " " + this.state.user.lastName}
             </Text>
             {this.state.showOptions && (
               <View style={cameraWrapper}>
                 <TouchableOpacity onPress={() => this._pickImage(false)}>
-                 
                   <Button
-  color="#841584"
-  accessibilityLabel="Learn more about this purple button"
-> <Text>Camera Roll</Text></Button>
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                  >
+                    <Text>Camera Roll</Text>
+                  </Button>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this._pickImage(true)}>
                   <Text>Image Library</Text>
@@ -210,72 +210,68 @@ export default class People extends Component {
             )}
           </View>
           <View>
-            {/* <Button onPress={() => navigate('Profile', {name: this.state.user})}></Button> */}
-            {/* <TouchableOpacity>
-              <Text
-                onPress={() => {
-                  navigate("Calendar", { name: this.state.user });
-                }}
-              >
-                Open calendar
+          </View>
+          {!this.state.edit && (
+            <Button onPress={this.onEditClick}>Edit this profile</Button>
+          )}
+          {!this.state.edit && (
+            <View>
+              <Text>
+                Name: {this.state.user.firstName} {this.state.user.lastName}
               </Text>
-            </TouchableOpacity> */}
-          </View>
-          {!this.state.edit &&
-          <Button onPress={this.onEditClick}>Edit this profile</Button>
-          }
-          {!this.state.edit &&
-          <View>
-            <Text>Name: {this.state.user.firstName} {this.state.user.lastName}</Text>
-            <Text>Position: {this.state.user.position}</Text>
-            <Text>Email: {this.state.user.email}</Text>
-            <Text>Gender: {this.state.user.gender}</Text>
-            <Text>Hired: {this.formatDate(this.state.user.beginDate)}</Text>
-          </View>
-          }
-         
-          {this.state.edit &&
-          <View>
-             <Text>First name:</Text>
-            <TextInputApollo
-            style={styles.input}
-            value={this.state.newfirstname}
-            onChangeText={(value) => this.setState({newfirstname: value})}
-            />
+              <Text>Position: {this.state.user.position}</Text>
+              <Text>Email: {this.state.user.email}</Text>
+              <Text>Gender: {this.state.user.gender}</Text>
+              <Text>
+                Hired: {this.formatDate(this.state.user.beginDate)}
+              </Text>
+            </View>
+          )}
+
+          {this.state.edit && (
+            <View>
+              <Text>First name:</Text>
+              <TextInputApollo
+                style={styles.input}
+                value={this.state.newfirstname}
+                onChangeText={value =>
+                  this.setState({ newfirstname: value })
+                }
+              />
               <Text>Last name:</Text>
-             <TextInputApollo
-            style={styles.input}
-            value={this.state.newlastname}
-            onChangeText={(value) => this.setState({newlastname: value})}
-
-            
-            />
-             <Text>Position:</Text>
-            <TextInputApollo
-            style={styles.input}
-            value={this.state.newposition}
-            onChangeText={(value) => this.setState({newposition: value})}
-
-            />
-            <Text>Email:</Text>
-            <TextInputApollo
-            style={styles.input}
-            value={this.state.newemail}
-            onChangeText={(value) => this.setState({newemail: value})}
-
-            />
-            <Button onClick={this.closeModal}><Text>Close</Text></Button>
-
-          </View>
-          }
-           {this.state.edit &&
-          <View>
-             <Button onPress={this.onEditClick}>Dismiss</Button>
-             <Button onPress={this.handleSubmit}>Submit</Button>
-          </View>
-          }
-          </View>
-        </Modal>
+              <TextInputApollo
+                style={styles.input}
+                value={this.state.newlastname}
+                onChangeText={value =>
+                  this.setState({ newlastname: value })
+                }
+              />
+              <Text>Position:</Text>
+              <TextInputApollo
+                style={styles.input}
+                value={this.state.newposition}
+                onChangeText={value =>
+                  this.setState({ newposition: value })
+                }
+              />
+              <Text>Email:</Text>
+              <TextInputApollo
+                style={styles.input}
+                value={this.state.newemail}
+                onChangeText={value => this.setState({ newemail: value })}
+              />
+              {/* <Button onClick={this.closeModal}>
+                <Text>Close</Text>
+              </Button> */}
+            </View>
+          )}
+          {this.state.edit && (
+            <View>
+              <Button onPress={this.onEditClick}>Dismiss</Button>
+              <Button onPress={this.handleSubmit}>Submit</Button>
+            </View>
+          )}
+        </RNModal>
       </SafeAreaView>
     );
   }
@@ -333,7 +329,7 @@ const styles = {
   profileWrapper: {
     justifyContent: 'center', 
     alignItems: 'center',
-    marginTop:100,
+    // marginTop:100,
   }
 
 };
