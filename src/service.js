@@ -81,14 +81,14 @@ export const updateUsers = async (id,person) => {
     }
   };
   // axios.put("http://ec2-34-221-254-153.us-west-2.compute.amazonaws.com:3000/api/people/"+id, person, axiosConfig)
-  axios.put("http://"+HOST_ADDRESS+":3000/api/people"+id, person, axiosConfig)
+  return axios.put("http://"+HOST_ADDRESS+":3000/api/people/"+id, person )//axiosConfig)
   
-  .then(res => {
+  // .then(res => {
      
-      return true;
-    })
-    .catch(err => {
-      console.warn(err);
-      return false;
-    });
+  //     return true;
+  //   })
+  //   .catch(err => {
+  //     console.warn(err);
+  //     return false;
+  //   });
 };
