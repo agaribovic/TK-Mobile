@@ -8,7 +8,7 @@ export default class Button extends Component {
         onPress={this.props.onPress}
         style={[{ width: this.props.width }, styles.buttonStyle]}>
         <Text style={styles.textStyle}>{this.props.children}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>     
     );
   }
 }

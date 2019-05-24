@@ -22,7 +22,9 @@ const LoggedInRoutes = createBottomTabNavigator({
         <Ionicons name="md-person" size={32} color="#222" />
       )
     }
+    
   },
+ 
   // Calendar: {
   //   screen: Calendar,
   //   navigationOptions: {
@@ -32,6 +34,12 @@ const LoggedInRoutes = createBottomTabNavigator({
   //     )
   //   }
   // }
-});
+},
+// {
+//   headerMode: 'screen',
+//   cardStyle: { backgroundColor: '#0a59a9' },
+// },
+);
+
 
 export default LoggedInRoutes;
