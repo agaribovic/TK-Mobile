@@ -52,7 +52,7 @@ export default class LoginForm extends Component {
         />
 
         <TouchableOpacity>
-            <Button onPress={()=>{this.onLoginHandler(this.props.login)}}><Text >Log in</Text></Button>
+            <Button style={styles.buttonStyle} onPress={()=>{this.onLoginHandler(this.props.login)}}><Text style={styles.textStyle} >Log in</Text></Button>
         </TouchableOpacity>
         <TouchableOpacity>
         <Text style={styles.forgotMe}>Forgot password?</Text>
@@ -78,6 +78,18 @@ const styles=StyleSheet.create({
         textAlign:'center',
         color:'#0a59a9',
     },
+    textStyle: {
+      textAlign: "center",
+      color: "#0a59a9"
+    },
+    buttonStyle: {
+      backgroundColor: "#ffffff",
+      paddingVertical: 15,
+      marginBottom: 20,
+      marginLeft: 50,
+      marginRight: 50,
+      borderRadius: 12
+     },
     forgotMe:{
       textAlign:'center',
       color:'rgba(255,255,255,0.9)',
