@@ -63,17 +63,20 @@ export default class People extends Component {
       });
       console.log("Data: ", imageData)
       this.setState({
-        image: `data:image/png;base64,${imageData.base64}`
+        image: `data:image/png;base64,${imageData.base64}`,
+        showOptions:false
       })
+
     } else { 
       let imageData = await ImagePicker.launchCameraAsync({
         base64: true,
         allowsEditing: false,
-        quality: 0.5
+        quality: 0.2
       })
       console.log("Data: ", imageData);
       this.setState({
-        image: `data:image/png;base64,${imageData.base64}`
+        image: `data:image/png;base64,${imageData.base64}`,
+        showOptions:false
       })  
     }
   }
@@ -163,7 +166,7 @@ export default class People extends Component {
                  source :{ uri: item.image}
                }}
                linearGradientProps={{
-                colors: ['#86c5f9','#2196f3'],
+                colors: ['#86c5f9','#0C72CC'],
                 start: [1, 0],
                 end: [0.2, 0],
               }}
@@ -179,10 +182,18 @@ export default class People extends Component {
              style={styles.listItem}
              leftAvatar={{
                title: item.firstName,
-               source:{ AVATAR}
-              }}
+               source :{ AVATAR}
+             }}
+             linearGradientProps={{
+              colors: ['#86c5f9','#0C72CC'],
+              start: [1, 0],
+              end: [0.2, 0],
+            }}
+            titleStyle={{ color: 'white', fontWeight: 'bold' }}
              title={item.firstName}
              subtitle={item.position}
+             subtitleStyle={{ color: 'white' }}
+             chevronColor="white"
              chevron
            />
             }
@@ -203,31 +214,32 @@ export default class People extends Component {
         >
           <View style={styles.modalView}>
           <View style={profileWrapper}>
+          <Text style={{paddingBottom:10}}>
+              {this.state.user.firstName + " " + this.state.user.lastName}
+            </Text>
             {this.state.image ? (
-              <TouchableOpacity onPress={this._pickImageHandler}>
+              <TouchableOpacity onPress={this._pickImageHandler} style={{paddingBottom:10}}>
                 <Image source={{ uri: this.state.image }} style={avatar} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={this._pickImageHandler}>
+              <TouchableOpacity onPress={this._pickImageHandler} style={{paddingBottom:10}}>
                 <Image
                   source={require("../../assets/profile.jpg")}
                   style={avatar}
                 />
               </TouchableOpacity>
             )}
-            <Text>
-              {this.state.user.firstName + " " + this.state.user.lastName}
-            </Text>
+          
         
             {this.state.showOptions && (
               <View style={cameraWrapper}>
                 <TouchableOpacity >
-                  <Button color="#841584" onPress={() => this._pickImage(false)}>
+                  <Button color="#841584" style={styles.btn2} onPress={() => this._pickImage(false)}>
                   <Text>Camera roll</Text>
                   </Button>
                 </TouchableOpacity>
                 <TouchableOpacity >
-                <Button color="#841584" onPress={() => this._pickImage(true)}>
+                <Button color="#841584" style={styles.btn2} onPress={() => this._pickImage(true)}>
                     <Text>Upload from gallery</Text>
                   </Button>
                 </TouchableOpacity>
@@ -237,7 +249,7 @@ export default class People extends Component {
           <View />
           <View style={styles.informationWrapper}>
           {!this.state.edit && (
-            <Button onPress={this.onEditClick} style={styles.Button}>Edit this profile</Button>
+            <Button onPress={this.onEditClick} style={styles.Button}><Text style={styles.textStyle}>Edit this profile</Text></Button>
           )}
           {!this.state.edit && (
             <View>
@@ -291,7 +303,7 @@ export default class People extends Component {
             </View>
           )}
           {this.state.edit && (
-            <View>
+            <View style={styles.inln}>
               <Button onPress={this.onEditClick} style={styles.Button}><Text style={styles.buttonText}>Dismiss</Text></Button>
               <Button onPress={this.handleSubmit}style={styles.Button}><Text style={styles.buttonText}>Submit</Text></Button>
             </View>
@@ -362,6 +374,9 @@ const styles = {
     height: 100,
     borderRadius: 25
   },
+  inln:{
+    
+  },
   profileWrapper: {
     // flex:0.35,
     marginTop:-20,
@@ -374,24 +389,70 @@ const styles = {
     justifyContent: 'center', 
     alignItems: 'center',
   },
-  btn:{
-
-  },
-  Button:{
-    marginRight:40,
-    marginLeft:40,
-    marginTop:10,
+  textStyle: {
+    textAlign: "center",
+    color: "white",
     paddingTop:10,
     paddingBottom:10,
-    backgroundColor:'#1E6738',
-    borderRadius:10,
-    borderWidth: 1,
+    paddingLeft:10,
+    paddingRight:10,
+    // marginTop:3
+    // borderColor:'red',
+    // borderWidth:1
+  },
+  Button:{
+    // backgroundColor: "#ffffff",
+    // paddingVertical: 15,
+    // marginBottom: 20,
+    // marginLeft: 50,
+    // marginRight: 50,
+    // borderRadius: 12
+    // marginRight:40,
+    // marginLeft:40,
+    // marginTop:10,
+    // paddingTop:10,
+    // paddingBottom:10,
+    paddingTop:15,
+    paddingBottom:15,
+    paddingLeft:15,
+    paddingRight:15,
+    marginLeft:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#0a59a9',
+    // width:50,
+    // borderColor:'red',
+    // borderWidth:1,
+    width:130,
+    height:35,
+    borderRadius:20,
+    alignItems:'center',
+    
+    // borderWidth: 1,
     // borderColor: '#fff'
   },
+  btn2:{
+    paddingTop:15,
+    paddingBottom:15,
+    paddingLeft:15,
+    paddingRight:15,
+    marginLeft:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#55a6f6',
+    width:130,
+    height:35,
+    borderRadius:20,
+    alignItems:'center',
+    marginBottom:20
+  },
   buttonText:{
-      color:'black',
+      color:'white',
       textAlign:'center',
-      paddingLeft : 10,
-      paddingRight : 10
+      paddingLeft : 20,
+      paddingRight : 20
+  },
+  inln:{
+    flexDirection:"row"
   }
 };

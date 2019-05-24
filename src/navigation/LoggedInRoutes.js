@@ -10,7 +10,7 @@ const LoggedInRoutes = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: null,
       tabBarIcon: ({ tintColor }) => (
-        <Ionicons name="md-contacts" size={32} color="#222" />
+        <Ionicons name="md-contacts" size={32} color="#0a59a9" />
       )
     }
   },
@@ -19,7 +19,7 @@ const LoggedInRoutes = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: null,
       tabBarIcon: ({ tintColor }) => (
-        <Ionicons name="md-person" size={32} color="#222" />
+        <Ionicons name="md-person" size={32} color="#0a59a9" />
       )
     }
     
