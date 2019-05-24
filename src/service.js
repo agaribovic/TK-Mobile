@@ -2,7 +2,7 @@ import axios from "axios";
 import { AsyncStorage } from "react-native";
 import config from "../config";
 export const TOKEN = "@Token:key";
-const HOST_ADDRESS="192.168.30.89"
+const HOST_ADDRESS= "192.168.60.24"
 export const authorize = ({ username, password, login }) => {
   let axiosConfig = {
     headers: {

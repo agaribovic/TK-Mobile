@@ -30,6 +30,7 @@ class RNModal extends Component {
      } = this.props;
     const { containerStyle, innerContainerStyle } = styles;
     return (
+    <View>
       <Modal animationType="none" onRequestClose={() => { }} transparent visible={visible}
       swipeDirection={this.props.swipeDirection}
       onSwipe={this.props.onSwipe}
@@ -60,6 +61,7 @@ class RNModal extends Component {
           </View>
         </View>
       </Modal>
+      </View>
     );
   }
 }
