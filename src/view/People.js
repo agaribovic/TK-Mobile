@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 import { Text, View, FlatList, TouchableOpacity,Image } from "react-native";
-import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
+import { SafeAreaView } from "react-navigation";
 import RNModal from '../components/RNModal'
 import Modal  from 'react-native-modalbox'
 import { getUsers } from "../service";
@@ -14,6 +14,7 @@ import TextInputApollo from '../components/TextInputApollo'
 import {updateUsers} from '../service'
 import AVATAR from "../../assets/profile.jpg"
 import { Font } from 'expo';
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 const RenderItem = () => <View style={styles.separator} />;
 
@@ -30,14 +31,14 @@ export default class People extends Component {
     newlastname:'',
     newposition:'',
     newemail:'',
-    clickedID:''
+    clickedID:'',
+    isDateTimePickerVisible: false,
+    parsedDate: null,
+    date: null
 
   };
 
    componentDidMount() { //async za font
-    // await Font.loadAsync({
-    //   'Monserrat': require('../../assets/fonts/Montserrat-Black.ttf'),
-    // });
     getUsers().then(users => {
       this.setState({
         users: users.data,
@@ -50,6 +51,23 @@ export default class People extends Component {
       });
     });
   }
+  showDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: true });
+  };
+
+  hideDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: false });
+  };
+
+  handleDatePicked = date => {
+    const select = moment(date).format("DD MM YYYY");
+    console.log(select,'selectan step 1') // ovdje je selectani datum
+    this.setState({
+      parsedDate: select,
+      date
+    });
+    this.hideDateTimePicker();
+  };
   _refresh = () => {
     this.componentDidMount()
   }
@@ -61,7 +79,7 @@ export default class People extends Component {
         allowsEditing: false,
         quality: 0.5
       });
-      console.log("Data: ", imageData)
+      // console.log("Data: ", imageData)
       this.setState({
         image: `data:image/png;base64,${imageData.base64}`,
         showOptions:false
@@ -73,7 +91,7 @@ export default class People extends Component {
         allowsEditing: false,
         quality: 0.2
       })
-      console.log("Data: ", imageData);
+      // console.log("Data: ", imageData);
       this.setState({
         image: `data:image/png;base64,${imageData.base64}`,
         showOptions:false
@@ -88,15 +106,18 @@ export default class People extends Component {
     })
   }
   _onPress = user => {
-  // console.log("TCL: People -> user", user)
-  // this.setState({ isOpen: false, user: '',clickedID:'', newemail:'',newfirstname:'',newlastname:'',newposition:''});
     this.setState({ isOpen: true, user: user, image:user.image,clickedID:user._id, newemail:user.email,newfirstname:user.firstName,newlastname:user.lastName,newposition:user.position});
   };
   _onPicturePress = user => {
     // console.log(user.firstName + 'editing profile');
   };
   closeModal = () => {
-    this.setState({ isOpen: false, user: {} });
+    this.setState({
+      isOpen: false,
+      user: {},
+      parsedDate: null,
+      date: null
+    });
   };
   _pickImageHandler = () => {
     this.setState({ showOptions: !this.state.showOptions})
@@ -115,6 +136,20 @@ export default class People extends Component {
            this.closeModal();
            this._refresh()
       });
+  };
+  openCalendar = () => {
+    const month = moment(this.state.date).month();
+    // console.log("TCL: People -> openCalendar -> this.state.date", this.state.date)
+    const year = moment(this.state.date).year();
+    const day = moment(this.state.date).day();//dod
+    this.closeModal();
+    console.log('=============================================')
+    this.props.navigation.navigate("Calendar", {
+      id: this.state.user._id,
+      month: month + 1,
+      year,
+      day
+    });
   };
      
   
@@ -142,14 +177,19 @@ export default class People extends Component {
     }
   };
    _keyExtractor = (item, index) => item._id;
-
-  render() {
-    // console.log(this.state)
-    const {navigate}=this.props.navigation
-    const { itemWrapper, firstName, avatar, profileWrapper, cameraWrapper} = styles;
-    const { image } = this.state;
-    const birthday = moment(this.state.user.birthday).format("MMMM Do YYYY");
-    return (
+    render() {
+      const {
+        itemWrapper,
+        firstName,
+        avatar,
+        profileWrapper,
+        cameraWrapper
+      } = styles;
+      
+      const { image, parsedDate } = this.state;
+      const birthday = moment(this.state.user.birthday).format("MMMM Do YYYY");
+      // console.log(this.state.items)
+      return (
       <SafeAreaView style={styles.all}>
         <FlatList
           extraData={this.state.refresh}
@@ -214,6 +254,35 @@ export default class People extends Component {
         >
           <View style={styles.modalView}>
           <View style={profileWrapper}>
+          {!parsedDate ? (
+                <Button
+                  title="Show DatePicker"
+                  onPress={this.showDateTimePicker}
+                ><Text>Show Datepicker</Text></Button>
+              ) : (
+                <View>
+                  <View>
+                    <Text>{parsedDate}</Text>
+                  </View>
+                  <View>
+                    <Button title="Open Calendar" onPress={this.openCalendar} ><Text>Open calendar</Text></Button>
+                    <Button
+                      title="Pick Another Date"
+                      onPress={this.showDateTimePicker}
+                      ><Text>Pick another date</Text></Button>
+                  </View>
+                </View>
+              )}
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
+            </View>
+            <View>
+              <Text>{this.state.user.firstName}</Text>
+              <Text>{birthday}</Text>
+            </View>
           <Text style={{paddingBottom:10}}>
               {this.state.user.firstName + " " + this.state.user.lastName}
             </Text>
@@ -308,7 +377,6 @@ export default class People extends Component {
               <Button onPress={this.handleSubmit}style={styles.Button}><Text style={styles.buttonText}>Submit</Text></Button>
             </View>
           )}
-          </View>
           </View>
         </RNModal>
       </SafeAreaView>

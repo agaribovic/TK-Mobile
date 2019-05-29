@@ -71,17 +71,19 @@ export const updateUsers = async (id, person) => {
   return axios.put("http://" + HOST_ADDRESS + ":3000/api/people/" + id, person); //axiosConfig)
 };
 // People API
-export const getTasks = async ({ id, month, year }) => {//ne radi kod nas, treba vidjet template i uzet ga
+export const getTasks = async ({ id, month, year }) => {
   const value = await AsyncStorage.getItem(TOKEN);
   let axiosConfig = {
     headers: {
       Authorization: `Bearer ${value}`
     }
   };
+  let xyear=2017
+  let xmonth=12
   let items = axios.get(
-    `http://ec2-34-221-254-153.us-west-2.compute.amazonaws.com:3000/api/month/${id}/${year}/${month}`,
+    `http://ec2-34-221-254-153.us-west-2.compute.amazonaws.com:3000/api/month/${id}/${xyear}/${xmonth}`,
     axiosConfig
   );
-  console.log("DATA FETCHED: ", items);
+  // console.log("DATA FATCHED: ", items);
   return items;
 };
