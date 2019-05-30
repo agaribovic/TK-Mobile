@@ -8,8 +8,8 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import CloseIcon from '../assests/pics/close.png';
-import CloseRoundedIcon from '../assests/pics/rounded_close.png';
+import CloseIcon from '../assets/pics/close.png'
+import CloseRoundedIcon from '../assets/pics/rounded_close.png';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
