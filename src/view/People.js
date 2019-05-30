@@ -105,6 +105,7 @@ export default class People extends Component {
   };
 
   showDateTimePicker = () => {
+    console.log('klikno')
     this.setState({ isDateTimePickerVisible: true });
   };
   hideDateTimePicker = () => {
@@ -247,7 +248,7 @@ export default class People extends Component {
           ListHeaderComponent={this.renderHeader}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => this._onPress(item)}>
-              {item.image &&
+              {item.image && (
                 <ListItem
                   style={styles.listItem}
                   leftAvatar={{
@@ -255,18 +256,19 @@ export default class People extends Component {
                     source: { uri: item.image }
                   }}
                   linearGradientProps={{
-                    colors: ['#86c5f9', '#0C72CC'],
+                    colors: ["#86c5f9", "#0C72CC"],
                     start: [1, 0],
-                    end: [0.2, 0],
+                    end: [0.2, 0]
                   }}
-                  titleStyle={{ color: 'white', fontWeight: 'bold' }}
+                  titleStyle={{ color: "white", fontWeight: "bold" }}
                   title={item.firstName}
                   subtitle={item.position}
-                  subtitleStyle={{ color: 'white' }}
+                  subtitleStyle={{ color: "white" }}
                   chevronColor="white"
                   chevron
-                />}
-              {!item.image &&
+                />
+              )}
+              {!item.image && (
                 <ListItem
                   style={styles.listItem}
                   leftAvatar={{
@@ -274,22 +276,20 @@ export default class People extends Component {
                     source: { AVATAR }
                   }}
                   linearGradientProps={{
-                    colors: ['#86c5f9', '#0C72CC'],
+                    colors: ["#86c5f9", "#0C72CC"],
                     start: [1, 0],
-                    end: [0.2, 0],
+                    end: [0.2, 0]
                   }}
-                  titleStyle={{ color: 'white', fontWeight: 'bold' }}
+                  titleStyle={{ color: "white", fontWeight: "bold" }}
                   title={item.firstName}
                   subtitle={item.position}
-                  subtitleStyle={{ color: 'white' }}
+                  subtitleStyle={{ color: "white" }}
                   chevronColor="white"
                   chevron
                 />
-              }
-
+              )}
             </TouchableOpacity>
           )}
-
         />
         <RNModal
           visible={this.state.isOpen}
@@ -304,55 +304,73 @@ export default class People extends Component {
         >
           <View style={styles.modalView}>
             <View style={profileWrapper}>
-            {!parsedDate ? (
-               <Button
-                 onPress={this.showDateTimePicker}
-               ><Text>Show Datepicker</Text></Button>
-             ) : (
-               <View>
-                 <View>
-                   <Text>{parsedDate}</Text>
-                 </View>
-                 <View>
-                   <Button  onPress={this.openCalendar} ><Text>Open calendar</Text></Button>
-                   <Button
-                     onPress={this.showDateTimePicker}
-                     ><Text>Pick another date</Text></Button>
-                 </View>
-                 <DateTimePicker
-               isVisible={this.state.isDateTimePickerVisible}
-               onConfirm={this.handleDatePicked}
-               onCancel={this.hideDateTimePicker}
-             />
-               </View>
-             )}
+              {!parsedDate ? (
+                <Button onPress={this.showDateTimePicker}>
+                  <Text>Show Datepicker</Text>
+                </Button>
+              ) : (
+                <View>
+                  <View>
+                    <Text>{parsedDate}</Text>
+                  </View>
+                  <View>
+                    <Button onPress={this.openCalendar}>
+                      <Text>Open calendar</Text>
+                    </Button>
+                    <Button onPress={this.showDateTimePicker}>
+                      <Text>Pick another date</Text>
+                    </Button>
+                  </View>
+                </View>
+              )}
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
 
               <Text style={{ paddingBottom: 10 }}>
                 {this.state.user.firstName + " " + this.state.user.lastName}
               </Text>
               {this.state.image ? (
-                <TouchableOpacity onPress={this._pickImageHandler} style={{ paddingBottom: 10 }}>
-                  <Image source={{ uri: this.state.image }} style={avatar} />
+                <TouchableOpacity
+                  onPress={this._pickImageHandler}
+                  style={{ paddingBottom: 10 }}
+                >
+                  <Image
+                    source={{ uri: this.state.image }}
+                    style={avatar}
+                  />
                 </TouchableOpacity>
               ) : (
-                  <TouchableOpacity onPress={this._pickImageHandler} style={{ paddingBottom: 10 }}>
-                    <Image
-                      source={require("../../assets/profile.jpg")}
-                      style={avatar}
-                    />
-                  </TouchableOpacity>
-                )}
-
+                <TouchableOpacity
+                  onPress={this._pickImageHandler}
+                  style={{ paddingBottom: 10 }}
+                >
+                  <Image
+                    source={require("../../assets/profile.jpg")}
+                    style={avatar}
+                  />
+                </TouchableOpacity>
+              )}
 
               {this.state.showOptions && (
                 <View style={cameraWrapper}>
-                  <TouchableOpacity >
-                    <Button color="#841584" style={styles.btn2} onPress={() => this._pickImage(false)}>
+                  <TouchableOpacity>
+                    <Button
+                      color="#841584"
+                      style={styles.btn2}
+                      onPress={() => this._pickImage(false)}
+                    >
                       <Text>Camera roll</Text>
                     </Button>
                   </TouchableOpacity>
-                  <TouchableOpacity >
-                    <Button color="#841584" style={styles.btn2} onPress={() => this._pickImage(true)}>
+                  <TouchableOpacity>
+                    <Button
+                      color="#841584"
+                      style={styles.btn2}
+                      onPress={() => this._pickImage(true)}
+                    >
                       <Text>Upload from gallery</Text>
                     </Button>
                   </TouchableOpacity>
@@ -362,12 +380,15 @@ export default class People extends Component {
             <View />
             <View style={styles.informationWrapper}>
               {!this.state.edit && (
-                <Button onPress={this.onEditClick} style={styles.Button}><Text style={styles.textStyle}>Edit this profile</Text></Button>
+                <Button onPress={this.onEditClick} style={styles.Button}>
+                  <Text style={styles.textStyle}>Edit this profile</Text>
+                </Button>
               )}
               {!this.state.edit && (
                 <View>
                   <Text>
-                    Name: {this.state.user.firstName} {this.state.user.lastName}
+                    Name: {this.state.user.firstName}{" "}
+                    {this.state.user.lastName}
                   </Text>
                   <Text>Position: {this.state.user.position}</Text>
                   <Text>Email: {this.state.user.email}</Text>
@@ -408,7 +429,9 @@ export default class People extends Component {
                   <TextInputApollo
                     style={styles.input}
                     value={this.state.newemail}
-                    onChangeText={value => this.setState({ newemail: value })}
+                    onChangeText={value =>
+                      this.setState({ newemail: value })
+                    }
                   />
                   {/* <Button onClick={this.closeModal}>
                 <Text>Close</Text>
@@ -417,8 +440,12 @@ export default class People extends Component {
               )}
               {this.state.edit && (
                 <View style={styles.inln}>
-                  <Button onPress={this.onEditClick} style={styles.Button}><Text style={styles.buttonText}>Dismiss</Text></Button>
-                  <Button onPress={this.handleSubmit} style={styles.Button}><Text style={styles.buttonText}>Submit</Text></Button>
+                  <Button onPress={this.onEditClick} style={styles.Button}>
+                    <Text style={styles.buttonText}>Dismiss</Text>
+                  </Button>
+                  <Button onPress={this.handleSubmit} style={styles.Button}>
+                    <Text style={styles.buttonText}>Submit</Text>
+                  </Button>
                 </View>
               )}
             </View>
