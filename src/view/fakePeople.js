@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, FlatList, TouchableOpacity, Image } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView, StackViewTransitionConfigs } from "react-navigation";
 import RNModal from '../components/RNModal'
 import { getUsers } from "../service";
@@ -32,10 +32,9 @@ export default class People extends Component {
       newemail: '',
       clickedID: '',
       error: null,
-      isDateTimePickerVisible: false, 
-      parsedDate: null,
       filterText: '',
-      
+      isDateTimePickerVisible: false,
+      parsedDate: null,
 
     };
     this.arrayholder = []
@@ -45,8 +44,6 @@ export default class People extends Component {
     // await Font.loadAsync({
     //   'Monserrat': require('../../assets/fonts/Montserrat-Black.ttf'),
     // });
-    console.log(this.state.isDateTimePickerVisible)
-
     getUsers().then(users => {
       this.setState({
         users: users.data,
@@ -74,6 +71,24 @@ export default class People extends Component {
     );
   };
 
+  showDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: true });
+  };
+
+  hideDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: false });
+  };
+
+  handleDatePicked = date => {
+    const select = moment(date).format("DD MM YYYY");
+    console.log(select,'selectan step 1') // ovdje je selectani datum
+    this.setState({
+      parsedDate: select,
+      date
+    });
+    this.hideDateTimePicker();
+  };
+
   searchFilterFunction = text => {
     this.setState({
       filterText: text,
@@ -85,7 +100,18 @@ export default class People extends Component {
 
       return itemData.indexOf(textData) > -1;
     });
-
+    renderSeparator = () => {
+        return (
+          <View
+            style={{
+              height: 1,
+              width: '86%',
+              backgroundColor: '#CED0CE',
+              marginLeft: '14%',
+            }}
+          />
+        );
+      };
     this.setState({
       users: newData,
     });
@@ -94,7 +120,7 @@ export default class People extends Component {
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Search Employees..."
+        placeholder="ere..."
         lightTheme
         round
         onChangeText={text => this.searchFilterFunction(text)}
@@ -102,21 +128,6 @@ export default class People extends Component {
         value={this.state.filterText}
       />
     );
-  };
-
-  showDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: true });
-  };
-  hideDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: false });
-  };
-  handleDatePicked = date => {
-    const select = moment(date).format("DD MM YYYY");
-    this.setState({
-      parsedDate: select,
-      date
-    });
-    this.hideDateTimePicker();
   };
 
   _refresh = () => {
@@ -149,7 +160,34 @@ export default class People extends Component {
       })
     }
   }
+  renderHeader = () => {
+    return (
+      <SearchBar
+        placeholder="Type Here..."
+        lightTheme
+        round
+        onChangeText={text => this.searchFilterFunction(text)}
+        autoCorrect={false}
+        value={this.state.filterText}
+      />
+    );
+  };
+  searchFilterFunction = text => {
+    this.setState({
+      filterText: text,
+    });
 
+    const newData = this.arrayholder.filter(item => {
+      const itemData = `${item.firstName.toUpperCase()}`;
+      const textData = text.toUpperCase();
+
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({
+      users: newData,
+    });
+  };
   _loadPermissions = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
     this.setState({
@@ -165,11 +203,12 @@ export default class People extends Component {
     // console.log(user.firstName + 'editing profile');
   };
   closeModal = () => {
-    this.setState({ 
+    this.setState({
       isOpen: false,
       user: {},
       parsedDate: null,
-      date: null });
+      date: null
+    });
   };
   _pickImageHandler = () => {
     this.setState({ showOptions: !this.state.showOptions })
@@ -189,7 +228,6 @@ export default class People extends Component {
       this._refresh()
     });
   };
-
   openCalendar = () => {
     const month = moment(this.state.date).month();
     // console.log("TCL: People -> openCalendar -> this.state.date", this.state.date)
@@ -230,12 +268,11 @@ export default class People extends Component {
   };
   _keyExtractor = (item, index) => item._id;
 
-  
   render() {
     // console.log(this.state)
     const { navigate } = this.props.navigation
     const { itemWrapper, firstName, avatar, profileWrapper, cameraWrapper } = styles;
-    const { image, parsedDate } = this.state;
+    const { image } = this.state;
     const birthday = moment(this.state.user.birthday).format("MMMM Do YYYY");
     return (
       <SafeAreaView style={styles.all}>
@@ -305,28 +342,29 @@ export default class People extends Component {
           <View style={styles.modalView}>
             <View style={profileWrapper}>
             {!parsedDate ? (
-               <Button
-                 onPress={this.showDateTimePicker}
-               ><Text>Show Datepicker</Text></Button>
-             ) : (
-               <View>
-                 <View>
-                   <Text>{parsedDate}</Text>
-                 </View>
-                 <View>
-                   <Button  onPress={this.openCalendar} ><Text>Open calendar</Text></Button>
-                   <Button
-                     onPress={this.showDateTimePicker}
-                     ><Text>Pick another date</Text></Button>
-                 </View>
-                 <DateTimePicker
-               isVisible={this.state.isDateTimePickerVisible}
-               onConfirm={this.handleDatePicked}
-               onCancel={this.hideDateTimePicker}
-             />
-               </View>
-             )}
-
+                <Button
+                  title="Show DatePicker"
+                  onPress={this.showDateTimePicker}
+                ><Text>Show Datepicker</Text></Button>
+              ) : (
+                <View>
+                  <View>
+                    <Text>{parsedDate}</Text>
+                  </View>
+                  <View>
+                    <Button title="Open Calendar" onPress={this.openCalendar} ><Text>Open calendar</Text></Button>
+                    <Button
+                      title="Pick Another Date"
+                      onPress={this.showDateTimePicker}
+                      ><Text>Pick another date</Text></Button>
+                  </View>
+                  <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
+                </View>
+              )}
               <Text style={{ paddingBottom: 10 }}>
                 {this.state.user.firstName + " " + this.state.user.lastName}
               </Text>
