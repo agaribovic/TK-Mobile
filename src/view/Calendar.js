@@ -3,21 +3,27 @@ import React, { Component } from "react";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { getTasks } from "../service";
 import { Agenda } from "react-native-calendars";
+import Spinner from '../components/spinner'
 
 export default class Calendar extends Component {
   state = {
     navigationOptions: this.props.navigation.state.params,
     items: [],
-    newItems:{}
+    newItems:{},
+    loading:false
   };
 
   componentDidMount() {
-    getTasks(this.state.navigationOptions).then(items => {
+    this.setState({loading:true})
+    getTasks(
+      this.state.navigationOptions).then(items => {
       this.setState({
         //OVO JE HARD CODED DA GETA PODATKE IZ DECEMBRA 2017 GODINE, I OK JE NE DIRAJ
-        items: items.data
+        items: items.data,
+        loading:false
       });
     });
+    
   }
 
   renderEmptyDate() {
@@ -37,8 +43,8 @@ export default class Calendar extends Component {
     return date.toISOString().split("T")[0];
   }
 
-  loadItems(day) {
-    setTimeout(() => {
+  loadItems(day) { // mzoda treba dodat mehaniku da se ubacuju prazni entries
+      //  setTimeout(() => {
       let date = "";
       let desc = "";
       let newItems={}
@@ -53,7 +59,7 @@ export default class Calendar extends Component {
           });
         });
       });
-    }, 1000);
+    // }, 1000);
   }
   renderItem(item) {
     return (
@@ -67,12 +73,13 @@ export default class Calendar extends Component {
 
   render() {
     console.log(this.state.newItems)
-    return (
+    if(this.state.loading) return <Spinner animation={'Calendar'}></Spinner>
+    else return (
       <View style={{ flex: 1 }}>
         <Agenda
           items={this.state.newItems}
           loadItemsForMonth={this.loadItems.bind(this)}
-          selected={"2017-12-16"}
+          selected={"2017-11-12"}// 12.11. kareem brindle ima unesenih taskova, inace kalendar loada prazno, treba napravit empty entries
           renderItem={this.renderItem.bind(this)}
           renderEmptyDate={this.renderEmptyDate.bind(this)}
           rowHasChanged={this.rowHasChanged.bind(this)}

@@ -11,7 +11,7 @@ import TextInputApollo from '../components/TextInputApollo'
 import { updateUsers } from '../service'
 import AVATAR from "../../assets/profile.jpg"
 import DateTimePicker from "react-native-modal-datetime-picker";
-
+import Spinner from '../components/spinner'
 const RenderItem = () => <View style={styles.separator} />;
 
 export default class People extends Component {
@@ -35,6 +35,7 @@ export default class People extends Component {
       isDateTimePickerVisible: false, 
       parsedDate: null,
       filterText: '',
+      loading:false
       
 
     };
@@ -45,6 +46,7 @@ export default class People extends Component {
     // await Font.loadAsync({
     //   'Monserrat': require('../../assets/fonts/Montserrat-Black.ttf'),
     // });
+    this.setState({loading:true})
     console.log(this.state.isDateTimePickerVisible)
 
     getUsers().then(users => {
@@ -57,6 +59,8 @@ export default class People extends Component {
         newemail: '',
         clickedID: '',
       });
+      this.setState({loading:false})
+
       this.arrayholder = users.data
     });
   }
@@ -238,7 +242,8 @@ export default class People extends Component {
     const { itemWrapper, firstName, avatar, profileWrapper, cameraWrapper } = styles;
     const { image, parsedDate } = this.state;
     const birthday = moment(this.state.user.birthday).format("MMMM Do YYYY");
-    return (
+    if(this.state.loading)return <Spinner animation={'LoadingCircle'}></Spinner>
+    else return (
       <SafeAreaView style={styles.all}>
         <FlatList
           extraData={this.state.refresh}
@@ -305,21 +310,27 @@ export default class People extends Component {
           <View style={styles.modalView}>
             <View style={profileWrapper}>
               {!parsedDate ? (
-                <Button onPress={this.showDateTimePicker}>
-                  <Text>Show Datepicker</Text>
+                 <TouchableOpacity>
+                <Button onPress={this.showDateTimePicker}  style={styles.Button}>
+                  <Text style={styles.buttonText}>Show Datepicker</Text>
                 </Button>
+                </TouchableOpacity>
               ) : (
                 <View>
                   <View>
                     <Text>{parsedDate}</Text>
                   </View>
                   <View>
-                    <Button onPress={this.openCalendar}>
-                      <Text>Open calendar</Text>
+                  <TouchableOpacity>
+                    <Button onPress={this.openCalendar} style={styles.Button}>
+                      <Text style={styles.buttonText}>Open calendar</Text>
                     </Button>
-                    <Button onPress={this.showDateTimePicker}>
-                      <Text>Pick another date</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                    <Button onPress={this.showDateTimePicker} style={styles.Button}>
+                      <Text style={styles.buttonText}>Pick another date</Text>
                     </Button>
+                    </TouchableOpacity>
                   </View>
                 </View>
               )}
