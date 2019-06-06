@@ -41,19 +41,7 @@ class RNModal extends Component {
             <View style={styles.headerLeft}>
               <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
             </View>
-            <View style={styles.headerRight}>
-            {
-              closeIconRounded ? (
-                <TouchableOpacity onPress={onClose}>
-                <Image source={closeIcon || CloseRoundedIcon} style={[styles.closeIcon, closeIconStyle]} />
-              </TouchableOpacity>
-              ): (
-                <TouchableOpacity onPress={onClose}>
-                <Image source={closeIcon || CloseIcon} style={[styles.closeIcon, closeIconStyle]} />
-              </TouchableOpacity>
-              )
-            }
-            </View>
+           
             </View>
             <View style={[styles.contentStyle, contentStyle]}>
               {children}
