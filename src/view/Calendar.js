@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { getTasks } from "../service";
@@ -14,6 +13,7 @@ export default class Calendar extends Component {
   };
 
   componentDidMount() {
+
     this.setState({loading:true})
     getTasks(
       this.state.navigationOptions).then(items => {
@@ -72,7 +72,7 @@ export default class Calendar extends Component {
   }
 
   render() {
-    console.log(this.state.newItems)
+    // console.log(this.state.newItems)
     if(this.state.loading) return <Spinner animation={'Calendar'}></Spinner>
     else return (
       <View style={{ flex: 1 }}>
