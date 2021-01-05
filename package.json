@@ -7,7 +7,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "expo": "^32.0.0",
     "jsonwebtoken": "^8.5.1",
     "lottie-react-native": "^2.5.11",
